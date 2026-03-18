@@ -1,0 +1,16 @@
+.idea
+__pycache__
+*.pyc
+*.pyo
+*.egg-info
+dist/
+build/
+.venv/
+.eggs/
+*.spec
+!e_rechnung.spec
+*.exe
+*.msi
+*.log
+config.ini
+.pytest_cache/
