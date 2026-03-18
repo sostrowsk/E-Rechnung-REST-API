@@ -1,0 +1,155 @@
+@page {
+    size: A4;
+    margin: 20mm 20mm 30mm 25mm;
+    @bottom-center {
+        content: "";
+    }
+}
+
+body {
+    font-family: sans-serif;
+    font-size: 10pt;
+    line-height: 1.4;
+    color: #333;
+}
+
+.sender-line {
+    font-size: 7pt;
+    color: #888;
+    margin-bottom: 2mm;
+    border-bottom: 0.5pt solid #ccc;
+    padding-bottom: 1mm;
+}
+
+.address-window {
+    margin-top: 10mm;
+    margin-bottom: 10mm;
+    min-height: 27mm;
+}
+
+.meta-block {
+    margin-bottom: 8mm;
+}
+
+.meta-table {
+    border-collapse: collapse;
+    font-size: 9pt;
+}
+
+.meta-table td {
+    padding: 1px 8px 1px 0;
+}
+
+.meta-table td:first-child {
+    color: #666;
+    white-space: nowrap;
+}
+
+h1 {
+    font-size: 14pt;
+    margin-bottom: 6mm;
+    color: #222;
+}
+
+.reference {
+    font-size: 9pt;
+    color: #666;
+    margin-bottom: 4mm;
+}
+
+.positions-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 6mm;
+    font-size: 9pt;
+}
+
+.positions-table thead {
+    border-bottom: 1.5pt solid #333;
+}
+
+.positions-table th {
+    text-align: left;
+    padding: 2mm 2mm;
+    font-weight: 600;
+}
+
+.positions-table td {
+    padding: 1.5mm 2mm;
+    border-bottom: 0.5pt solid #ddd;
+    vertical-align: top;
+}
+
+.col-pos { width: 6%; }
+.col-desc { width: 30%; }
+.col-qty { width: 10%; }
+.col-unit { width: 10%; }
+.col-price { width: 14%; }
+.col-vat { width: 10%; }
+.col-total { width: 14%; }
+
+.right { text-align: right; }
+
+.totals-table {
+    width: 40%;
+    margin-left: auto;
+    border-collapse: collapse;
+    margin-bottom: 8mm;
+    font-size: 10pt;
+}
+
+.totals-table td {
+    padding: 1.5mm 2mm;
+}
+
+.totals-table .grand-total td {
+    border-top: 1.5pt solid #333;
+    padding-top: 2mm;
+}
+
+.skonto {
+    margin-bottom: 4mm;
+    font-size: 9pt;
+    font-style: italic;
+    color: #555;
+}
+
+.note {
+    margin-bottom: 6mm;
+    padding: 3mm;
+    background: #f8f8f8;
+    border-left: 2pt solid #ccc;
+    font-size: 9pt;
+}
+
+.payment-info {
+    margin-bottom: 10mm;
+    font-size: 9pt;
+}
+
+.payment-info p {
+    margin: 1mm 0;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    font-size: 7pt;
+    color: #888;
+    border-top: 0.5pt solid #ccc;
+    padding-top: 2mm;
+}
+
+.footer-col {
+    flex: 1;
+}
+
+.legal-info {
+    font-size: 7pt;
+    color: #888;
+    margin-top: 4mm;
+}

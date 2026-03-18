@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="de">
+<head>
+  <meta charset="utf-8"/>
+  <link rel="stylesheet" href="invoice.css"/>
+</head>
+<body>
+<div class="sender-line">
+  {{ company.name }} &bull; {{ company.address_line1 }} &bull; {{ company.postcode }} {{ company.city }}
+</div>
+
+<div class="address-window">
+  <div>{{ invoice.customer_name }}</div>
+  <div>{{ addr.address_line1 }}{% if addr.address_line2 %} {{ addr.address_line2 }}{% endif %}</div>
+  <div>{{ addr.postcode }} {{ addr.city }}</div>
+  {% if addr.country_code and addr.country_code != 'DE' %}
+  <div>{{ addr.country_code }}</div>
+  {% endif %}
+</div>
+
+<div class="meta-block">
+  <table class="meta-table">
+    <tr><td>Rechnungsnummer:</td><td>{{ invoice.number }}</td></tr>
+    <tr><td>Rechnungsdatum:</td><td>{{ invoice.issue_date.strftime('%d.%m.%Y') if invoice.issue_date else '' }}</td></tr>
+    <tr><td>Faellig:</td><td>{{ invoice.due_date.strftime('%d.%m.%Y') if invoice.due_date else '' }}</td></tr>
+    {% if invoice.delivery_date %}
+    <tr><td>Lieferdatum:</td><td>{{ invoice.delivery_date.strftime('%d.%m.%Y') }}</td></tr>
+    {% endif %}
+    {% if invoice.period_start and invoice.period_end %}
+    <tr><td>Leistungszeitraum:</td><td>{{ invoice.period_start.strftime('%d.%m.%Y') }} &ndash; {{ invoice.period_end.strftime('%d.%m.%Y') }}</td></tr>
+    {% endif %}
+    {% if invoice.customer_vat_id %}
+    <tr><td>USt-IdNr. Kunde:</td><td>{{ invoice.customer_vat_id }}</td></tr>
+    {% endif %}
+    {% if invoice.order_reference %}
+    <tr><td>Bestellnummer:</td><td>{{ invoice.order_reference }}</td></tr>
+    {% endif %}
+    {% if invoice.contract_reference %}
+    <tr><td>Vertragsnummer:</td><td>{{ invoice.contract_reference }}</td></tr>
+    {% endif %}
+  </table>
+</div>
+
+<h1>
+  {% if invoice.type_code == '381' %}Gutschrift{% elif invoice.type_code == '384' %}Korrekturrechnung{% else %}Rechnung{% endif %}
+  {{ invoice.number }}
+</h1>
+
+{% if invoice.preceding_invoice_number %}
+<p class="reference">Bezug auf Rechnung {{ invoice.preceding_invoice_number }}{% if invoice.preceding_invoice_date %} vom {{ invoice.preceding_invoice_date.strftime('%d.%m.%Y') }}{% endif %}</p>
+{% endif %}
+
+<table class="positions-table">
+  <thead>
+    <tr>
+      <th class="col-pos">Pos</th>
+      <th class="col-desc">Beschreibung</th>
+      <th class="col-qty">Menge</th>
+      <th class="col-unit">Einheit</th>
+      <th class="col-price">Einzelpreis</th>
+      <th class="col-vat">USt%</th>
+      <th class="col-total">Gesamt</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for line in invoice.lines %}
+    <tr>
+      <td class="col-pos">{{ loop.index }}</td>
+      <td class="col-desc">{{ line.description }}</td>
+      <td class="col-qty right">{{ line.quantity }}</td>
+      <td class="col-unit">{{ line.unit_code }}</td>
+      <td class="col-price right">{{ line.unit_price|betrag }}</td>
+      <td class="col-vat right">{{ line.vat_rate }}%</td>
+      <td class="col-total right">{{ line.line_total|betrag }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<table class="totals-table">
+  <tr>
+    <td>Netto:</td>
+    <td class="right">{{ invoice.total_net|betrag }} {{ invoice.currency }}</td>
+  </tr>
+  {% for group in tax_breakdown %}
+  <tr>
+    <td>USt ({{ group.rate }}%):</td>
+    <td class="right">{{ group.tax_amount|betrag }} {{ invoice.currency }}</td>
+  </tr>
+  {% endfor %}
+  <tr class="grand-total">
+    <td><strong>Brutto:</strong></td>
+    <td class="right"><strong>{{ invoice.total_gross|betrag }} {{ invoice.currency }}</strong></td>
+  </tr>
+  {% if invoice.prepaid_amount and invoice.prepaid_amount > 0 %}
+  <tr>
+    <td>Bereits gezahlt:</td>
+    <td class="right">-{{ invoice.prepaid_amount|betrag }} {{ invoice.currency }}</td>
+  </tr>
+  <tr>
+    <td><strong>Zahlbetrag:</strong></td>
+    <td class="right"><strong>{{ invoice.due_payable_amount|betrag }} {{ invoice.currency }}</strong></td>
+  </tr>
+  {% endif %}
+</table>
+
+{% if invoice.skonto_percent and invoice.skonto_days %}
+<div class="skonto">
+  {{ invoice.skonto_percent }}% Skonto bei Zahlung innerhalb {{ invoice.skonto_days }} Tagen
+</div>
+{% endif %}
+
+{% if invoice.note %}
+<div class="note">{{ invoice.note }}</div>
+{% endif %}
+
+<div class="payment-info">
+  {% if invoice.payment_terms %}
+  <p>{{ invoice.payment_terms }}</p>
+  {% elif invoice.due_date %}
+  <p>Zahlbar bis {{ invoice.due_date.strftime('%d.%m.%Y') }}.</p>
+  {% endif %}
+  <p>Bankverbindung: {{ company.bank_name }}{% if company.bank_name %}, {% endif %}IBAN {{ company.iban }}{% if company.bic %}, BIC {{ company.bic }}{% endif %}</p>
+</div>
+
+<div class="footer">
+  <div class="footer-col">{{ company.name }}<br/>{{ company.address_line1 }}<br/>{{ company.postcode }} {{ company.city }}</div>
+  <div class="footer-col">{% if company.contact_phone %}Tel: {{ company.contact_phone }}<br/>{% endif %}{% if company.contact_email %}{{ company.contact_email }}{% endif %}</div>
+  <div class="footer-col">{% if company.vat_id %}USt-IdNr: {{ company.vat_id }}<br/>{% endif %}{% if company.tax_number %}St-Nr: {{ company.tax_number }}{% endif %}</div>
+  <div class="footer-col">{{ company.bank_name }}<br/>IBAN {{ company.iban }}{% if company.bic %}<br/>BIC {{ company.bic }}{% endif %}</div>
+</div>
+
+{% if company.legal_info %}
+<div class="legal-info">{{ company.legal_info }}</div>
+{% endif %}
+</body>
+</html>
