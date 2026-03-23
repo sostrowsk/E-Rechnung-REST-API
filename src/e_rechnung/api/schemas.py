@@ -20,9 +20,13 @@ class SapPosition(BaseModel):
     work_pool_free_text: str = Field("", alias="workPoolFreeText", description="Positionstext / Leistungsbeschreibung")
     amount: str = Field("1", alias="amount", description="Menge")
     unit: str = Field("ST", alias="unit", description="Mengeneinheit SAP (ST, STD, TAG, PAU, ...)")
+    unit_description: str = Field(
+        "", alias="unitDescription", description="Beschreibung der Mengeneinheit (z.B. 'Stunden', 'Stueck')"
+    )
     unit_price: str = Field("0", alias="unitPrice", description="Einzelpreis netto")
     tax_percent: str = Field("19", alias="taxPercent", description="Steuersatz in Prozent")
     tax_code: str = Field("", alias="taxCode", description="SAP-Steuerkennzeichen (optional)")
+    mwart: str = Field("", alias="mwart", description="Steuerart: A=Ausgangssteuer, V=Vorsteuer")
     work_pool_date_from: str = Field("", alias="workPoolDateFrom", description="Leistungszeitraum von (YYYYMMDD)")
     work_pool_date_to: str = Field("", alias="workPoolDateTo", description="Leistungszeitraum bis (YYYYMMDD)")
     revenue_account: str = Field("", alias="revenueAccount", description="Erloeskonto (nicht gemappt)")
@@ -75,10 +79,19 @@ class SapHead(BaseModel):
     invoice_number: str = Field(alias="invoiceNumber", description="SAP-Rechnungsnummer")
     invoice_date: str = Field(alias="invoiceDate", description="Rechnungsdatum (YYYYMMDD oder YYYY-MM-DD)")
     due_date: str = Field("", alias="dueDate", description="Faelligkeitsdatum (YYYYMMDD oder YYYY-MM-DD)")
-    invoice_kind: str = Field("", alias="invoiceKind", description="Rechnungsart (leer=Rechnung, via SAP_KIND_MAP erweiterbar)")
+    invoice_kind: str = Field(
+        "",
+        alias="invoiceKind",
+        description="Rechnungsart: I=Rechnung, M=Gutschrift, C=Storno Rechnung, R=Storno Gutschrift, O=Angebot",
+    )
+    invoice_kind_description: str = Field(
+        "", alias="invoiceKindDescription", description="Beschreibung der Rechnungsart (z.B. 'Rechnung', 'Gutschrift')"
+    )
     invoice_currency: str = Field("EUR", alias="invoiceCurrency", description="Waehrungscode ISO 4217")
     invoice_zterm_text: str = Field("", alias="invoiceZtermText", description="Zahlungsbedingungen Freitext")
-    ref_invoice_number: str = Field("", alias="refInvoiceNumber", description="Referenz auf Ursprungsrechnung (bei Gutschriften)")
+    ref_invoice_number: str = Field(
+        "", alias="refInvoiceNumber", description="Referenz auf Ursprungsrechnung (bei Gutschriften)"
+    )
     aufnr: str = Field("", alias="aufnr", description="SAP-Auftragsnummer / Order Reference")
     subject_freetext: str = Field("", alias="subjectFreetext", description="Betreff / Bemerkung")
     contact_mail: str = Field("", alias="contactMail", description="E-Mail Ansprechpartner Kaeufer")

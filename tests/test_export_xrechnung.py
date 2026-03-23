@@ -17,25 +17,38 @@ NS = {"inv": UBL_NS, "cbc": CBC_NS, "cac": CAC_NS}
 
 def _company():
     return Company(
-        name="Test GmbH", address_line1="Teststr. 1",
-        postcode="12345", city="Berlin", country_code="DE",
-        vat_id="DE123456789", contact_name="Max Mustermann",
-        contact_email="test@test.de", contact_phone="+49 123 456",
-        iban="DE89370400440532013000", bic="COBADEFFXXX",
+        name="Test GmbH",
+        address_line1="Teststr. 1",
+        postcode="12345",
+        city="Berlin",
+        country_code="DE",
+        vat_id="DE123456789",
+        contact_name="Max Mustermann",
+        contact_email="test@test.de",
+        contact_phone="+49 123 456",
+        iban="DE89370400440532013000",
+        bic="COBADEFFXXX",
     )
 
 
 def _invoice():
     line = InvoiceLine(
-        line_id=1, description="IT-Beratung", quantity=Decimal("8.000"),
-        unit_code="HUR", unit_price=Decimal("150.00"),
-        line_total=Decimal("1200.00"), vat_category_code="S",
+        line_id=1,
+        description="IT-Beratung",
+        quantity=Decimal("8.000"),
+        unit_code="HUR",
+        unit_price=Decimal("150.00"),
+        line_total=Decimal("1200.00"),
+        vat_category_code="S",
         vat_rate=Decimal("19.00"),
     )
     return Invoice(
-        number="RE-2026-00042", type_code="380",
-        issue_date=date(2026, 3, 1), due_date=date(2026, 3, 15),
-        delivery_date=date(2026, 3, 1), currency="EUR",
+        number="RE-2026-00042",
+        type_code="380",
+        issue_date=date(2026, 3, 1),
+        due_date=date(2026, 3, 15),
+        delivery_date=date(2026, 3, 1),
+        currency="EUR",
         customer_name="Behoerde XY",
         customer_address={
             "address_line1": "Amtsstr. 5",
@@ -45,8 +58,10 @@ def _invoice():
         },
         buyer_reference="04011000-12345-67",
         customer_contact_email="rechnung@behoerde.de",
-        total_net=Decimal("1200.00"), vat_amount=Decimal("228.00"),
-        total_gross=Decimal("1428.00"), lines=[line],
+        total_net=Decimal("1200.00"),
+        vat_amount=Decimal("228.00"),
+        total_gross=Decimal("1428.00"),
+        lines=[line],
     )
 
 

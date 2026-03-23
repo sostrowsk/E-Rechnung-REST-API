@@ -57,7 +57,11 @@ def validate_for_xrechnung(invoice: Invoice, company: Company) -> list[Validatio
     errors = validate_for_zugferd(invoice, company)
 
     if not invoice.buyer_reference:
-        errors.append(ValidationError("kunde.buyer_reference", "Leitweg-ID (Buyer Reference) erforderlich fuer XRechnung", "error"))
+        errors.append(
+            ValidationError(
+                "kunde.buyer_reference", "Leitweg-ID (Buyer Reference) erforderlich fuer XRechnung", "error"
+            )
+        )
     if not invoice.customer_contact_email:
         errors.append(ValidationError("kunde.contact_email", "Kaeufer-E-Mail erforderlich fuer XRechnung", "error"))
 

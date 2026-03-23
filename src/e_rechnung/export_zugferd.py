@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from datetime import timedelta
 from decimal import Decimal
 
 from drafthorse.models.accounting import ApplicableTradeTax
@@ -16,7 +15,6 @@ from e_rechnung.pdf_render import render_pdf
 from e_rechnung.utils import FACTUR_X_GUIDELINE, PROFILE, round_decimal
 from e_rechnung.validators import has_critical_errors, validate_for_zugferd
 
-
 _EXEMPTION_MAP = {
     "K": ("VATEX-EU-IC", "Intra-Community supply"),
     "G": ("VATEX-EU-EXP", "Export supply"),
@@ -26,7 +24,10 @@ _EXEMPTION_MAP = {
 
 
 def create_trade_tax(
-    amount: Decimal, basis_amount: Decimal, category_code: str, vat_rate: Decimal,
+    amount: Decimal,
+    basis_amount: Decimal,
+    category_code: str,
+    vat_rate: Decimal,
 ) -> ApplicableTradeTax:
     trade_tax = ApplicableTradeTax()
     trade_tax.calculated_amount = round_decimal(amount)
@@ -71,7 +72,13 @@ def export_zugferd(invoice: Invoice, company: Company, output_path: str) -> None
     # Header
     doc.header.id = invoice.number
     doc.header.type_code = invoice.type_code
-    doc.header.name = "RECHNUNG" if invoice.type_code == "380" else "GUTSCHRIFT"
+    _TYPE_CODE_NAMES = {
+        "380": "RECHNUNG",
+        "381": "GUTSCHRIFT",
+        "383": "STORNOGUTSCHRIFT",
+        "384": "STORNORECHNUNG",
+    }
+    doc.header.name = _TYPE_CODE_NAMES.get(invoice.type_code, "RECHNUNG")
     doc.header.issue_date_time = invoice.issue_date
 
     # Billing period note
@@ -144,9 +151,7 @@ def export_zugferd(invoice: Invoice, company: Company, output_path: str) -> None
             doc.trade.settlement.invoice_referenced_document.issue_date_time = invoice.preceding_invoice_date
 
     # Delivery
-    doc.trade.delivery.event.occurrence = (
-        invoice.delivery_date or invoice.period_end or invoice.issue_date
-    )
+    doc.trade.delivery.event.occurrence = invoice.delivery_date or invoice.period_end or invoice.issue_date
 
     if invoice.period_start and invoice.period_end:
         doc.trade.settlement.period.start = invoice.period_start

@@ -104,12 +104,14 @@ class Invoice:
             tax_groups[key] = tax_groups.get(key, Decimal("0.00")) + line.line_total
         result = []
         for (cat_code, rate), basis in sorted(tax_groups.items()):
-            result.append({
-                "category_code": cat_code,
-                "rate": rate,
-                "basis_amount": round_decimal(basis),
-                "tax_amount": round_decimal(basis * rate / 100),
-            })
+            result.append(
+                {
+                    "category_code": cat_code,
+                    "rate": rate,
+                    "basis_amount": round_decimal(basis),
+                    "tax_amount": round_decimal(basis * rate / 100),
+                }
+            )
         return result
 
 

@@ -1,8 +1,6 @@
-from decimal import Decimal
-
 import pytest
 
-from e_rechnung.models import Company, Invoice, InvoiceLine
+from e_rechnung.models import Company
 
 
 @pytest.fixture

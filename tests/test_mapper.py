@@ -6,9 +6,7 @@ from decimal import Decimal
 import pytest
 
 from e_rechnung.api.mapper import (
-    SAP_KIND_MAP,
     SAP_TAX_CODE_MAP,
-    SAP_UNIT_MAP,
     map_sap_company,
     map_sap_to_invoice,
     map_tax_code,
@@ -97,6 +95,7 @@ def _make_request(
 
 # --- parse_sap_date ---
 
+
 class TestParseSapDate:
     def test_yyyymmdd(self):
         assert parse_sap_date("20260315") == date(2026, 3, 15)
@@ -115,6 +114,7 @@ class TestParseSapDate:
 
 # --- map_unit_code ---
 
+
 class TestMapUnitCode:
     def test_known(self):
         assert map_unit_code("STD") == "HUR"
@@ -131,6 +131,7 @@ class TestMapUnitCode:
 
 
 # --- map_tax_code ---
+
 
 class TestMapTaxCode:
     def test_standard_rate(self):
@@ -154,6 +155,7 @@ class TestMapTaxCode:
 
 # --- map_sap_company ---
 
+
 class TestMapSapCompany:
     def test_basic_mapping(self):
         result = map_sap_company(SAP_COMPANY)
@@ -167,6 +169,7 @@ class TestMapSapCompany:
 
 
 # --- map_sap_to_invoice ---
+
 
 class TestMapSapToInvoice:
     def test_basic_mapping(self, company):
@@ -295,17 +298,28 @@ class TestMapSapToInvoice:
         assert inv.period_end is None
 
     def test_credit_note_mapping(self, company):
-        SAP_KIND_MAP["G"] = "381"
-        try:
-            req = _make_request(
-                invoiceKind="G",
-                refInvoiceNumber="RE-ORIG001",
-            )
-            inv = map_sap_to_invoice(req, company)
-            assert inv.type_code == "381"
-            assert inv.preceding_invoice_number == "RE-ORIG001"
-        finally:
-            del SAP_KIND_MAP["G"]
+        req = _make_request(
+            invoiceKind="M",
+            refInvoiceNumber="RE-ORIG001",
+        )
+        inv = map_sap_to_invoice(req, company)
+        assert inv.type_code == "381"
+        assert inv.preceding_invoice_number == "RE-ORIG001"
+
+    def test_invoice_kind_rechnung(self, company):
+        req = _make_request(invoiceKind="I")
+        inv = map_sap_to_invoice(req, company)
+        assert inv.type_code == "380"
+
+    def test_invoice_kind_storno_rechnung(self, company):
+        req = _make_request(invoiceKind="C")
+        inv = map_sap_to_invoice(req, company)
+        assert inv.type_code == "384"
+
+    def test_invoice_kind_storno_gutschrift(self, company):
+        req = _make_request(invoiceKind="R")
+        inv = map_sap_to_invoice(req, company)
+        assert inv.type_code == "383"
 
     def test_payment_terms(self, company):
         req = _make_request(invoiceZtermText="30 Tage netto")

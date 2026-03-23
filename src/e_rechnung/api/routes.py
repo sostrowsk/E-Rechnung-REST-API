@@ -17,7 +17,6 @@ from e_rechnung.api.schemas import (
 from e_rechnung.export_xrechnung import export_xrechnung
 from e_rechnung.export_zugferd import export_zugferd
 from e_rechnung.validators import (
-    has_critical_errors,
     validate_for_xrechnung,
     validate_for_zugferd,
 )
@@ -32,10 +31,7 @@ def _validate(invoice, company, fmt: ExportFormat) -> list[ValidationErrorDetail
         errors = validate_for_xrechnung(invoice, company)
     else:
         errors = validate_for_zugferd(invoice, company)
-    return [
-        ValidationErrorDetail(field=e.field, message=e.message, severity=e.severity)
-        for e in errors
-    ]
+    return [ValidationErrorDetail(field=e.field, message=e.message, severity=e.severity) for e in errors]
 
 
 @router.post(
@@ -55,9 +51,13 @@ def _validate(invoice, company, fmt: ExportFormat) -> list[ValidationErrorDetail
         200: {"description": "Exportierte Rechnung (PDF, XML oder ZIP)"},
         422: {
             "description": "Validierungsfehler",
-            "content": {"application/json": {"example": [
-                {"field": "kunde.name", "message": "Kundenname erforderlich", "severity": "error"},
-            ]}},
+            "content": {
+                "application/json": {
+                    "example": [
+                        {"field": "kunde.name", "message": "Kundenname erforderlich", "severity": "error"},
+                    ]
+                }
+            },
         },
     },
 )
@@ -111,13 +111,21 @@ def export_invoice(
     responses={
         200: {
             "description": "Validierungsergebnis",
-            "content": {"application/json": {"example": {
-                "valid": False,
-                "errors": [
-                    {"field": "kunde.name", "message": "Kundenname erforderlich", "severity": "error"},
-                    {"field": "firma.contact_name", "message": "Ansprechpartner erforderlich", "severity": "warning"},
-                ],
-            }}},
+            "content": {
+                "application/json": {
+                    "example": {
+                        "valid": False,
+                        "errors": [
+                            {"field": "kunde.name", "message": "Kundenname erforderlich", "severity": "error"},
+                            {
+                                "field": "firma.contact_name",
+                                "message": "Ansprechpartner erforderlich",
+                                "severity": "warning",
+                            },
+                        ],
+                    }
+                }
+            },
         },
     },
 )

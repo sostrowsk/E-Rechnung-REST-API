@@ -7,20 +7,28 @@ from e_rechnung.validators import has_critical_errors, validate_for_xrechnung, v
 
 def _valid_company():
     return Company(
-        name="Test GmbH", address_line1="Teststr. 1", postcode="12345",
-        city="Berlin", vat_id="DE123456789", contact_name="Max Mustermann",
-        contact_email="test@test.de", contact_phone="+49 123 456",
+        name="Test GmbH",
+        address_line1="Teststr. 1",
+        postcode="12345",
+        city="Berlin",
+        vat_id="DE123456789",
+        contact_name="Max Mustermann",
+        contact_email="test@test.de",
+        contact_phone="+49 123 456",
         iban="DE89370400440532013000",
     )
 
 
 def _valid_invoice():
     line = InvoiceLine(
-        description="Beratung", quantity=Decimal("1.000"),
-        unit_price=Decimal("100.00"), line_total=Decimal("100.00"),
+        description="Beratung",
+        quantity=Decimal("1.000"),
+        unit_price=Decimal("100.00"),
+        line_total=Decimal("100.00"),
     )
     return Invoice(
-        number="RE-2026-00001", issue_date=date(2026, 1, 15),
+        number="RE-2026-00001",
+        issue_date=date(2026, 1, 15),
         due_date=date(2026, 1, 29),
         customer_name="Kunde AG",
         customer_address={
@@ -32,7 +40,8 @@ def _valid_invoice():
         customer_vat_id="DE987654321",
         buyer_reference="04011000-12345-67",
         customer_contact_email="kunde@test.de",
-        total_net=Decimal("100.00"), vat_amount=Decimal("19.00"),
+        total_net=Decimal("100.00"),
+        vat_amount=Decimal("19.00"),
         total_gross=Decimal("119.00"),
         lines=[line],
     )

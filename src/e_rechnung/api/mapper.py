@@ -23,9 +23,13 @@ SAP_UNIT_MAP: dict[str, str] = {
 # Extend as needed, e.g. "IC": "K", "RC": "AE"
 SAP_TAX_CODE_MAP: dict[str, str] = {}
 
-# SAP invoice kind -> type code
-# Extend as needed, e.g. "R": "380", "G": "381"
-SAP_KIND_MAP: dict[str, str] = {}
+# SAP invoice kind -> UN/CEFACT document type code (UNTDID 1001)
+SAP_KIND_MAP: dict[str, str] = {
+    "I": "380",  # Rechnung
+    "M": "381",  # Gutschrift
+    "C": "384",  # Storno zur Rechnung
+    "R": "383",  # Storno zur Gutschrift
+}
 
 
 def parse_sap_date(value: str) -> date | None:

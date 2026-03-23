@@ -12,26 +12,39 @@ from e_rechnung.models import Company, Invoice, InvoiceLine
 
 def _company():
     return Company(
-        name="Test GmbH", address_line1="Teststr. 1",
-        postcode="12345", city="Berlin", country_code="DE",
-        vat_id="DE123456789", contact_name="Max Mustermann",
-        contact_email="test@test.de", contact_phone="+49 123 456",
-        iban="DE89370400440532013000", bic="COBADEFFXXX",
+        name="Test GmbH",
+        address_line1="Teststr. 1",
+        postcode="12345",
+        city="Berlin",
+        country_code="DE",
+        vat_id="DE123456789",
+        contact_name="Max Mustermann",
+        contact_email="test@test.de",
+        contact_phone="+49 123 456",
+        iban="DE89370400440532013000",
+        bic="COBADEFFXXX",
         bank_name="Commerzbank",
     )
 
 
 def _invoice():
     line = InvoiceLine(
-        line_id=1, description="Beratung", quantity=Decimal("10.000"),
-        unit_code="HUR", unit_price=Decimal("100.00"),
-        line_total=Decimal("1000.00"), vat_category_code="S",
+        line_id=1,
+        description="Beratung",
+        quantity=Decimal("10.000"),
+        unit_code="HUR",
+        unit_price=Decimal("100.00"),
+        line_total=Decimal("1000.00"),
+        vat_category_code="S",
         vat_rate=Decimal("19.00"),
     )
     return Invoice(
-        number="RE-2026-00001", type_code="380",
-        issue_date=date(2026, 1, 15), due_date=date(2026, 1, 29),
-        delivery_date=date(2026, 1, 15), currency="EUR",
+        number="RE-2026-00001",
+        type_code="380",
+        issue_date=date(2026, 1, 15),
+        due_date=date(2026, 1, 29),
+        delivery_date=date(2026, 1, 15),
+        currency="EUR",
         customer_name="Kunde AG",
         customer_address={
             "address_line1": "Kundenstr. 2",
@@ -39,8 +52,10 @@ def _invoice():
             "city": "Muenchen",
             "country_code": "DE",
         },
-        total_net=Decimal("1000.00"), vat_amount=Decimal("190.00"),
-        total_gross=Decimal("1190.00"), lines=[line],
+        total_net=Decimal("1000.00"),
+        vat_amount=Decimal("190.00"),
+        total_gross=Decimal("1190.00"),
+        lines=[line],
     )
 
 
@@ -76,7 +91,7 @@ def test_export_zugferd_xml_content():
     assert xml_start > 0
     xml_end = pdf_data.find(b"</rsm:CrossIndustryInvoice>", xml_start)
     assert xml_end > 0
-    xml_bytes = pdf_data[xml_start:xml_end + len(b"</rsm:CrossIndustryInvoice>")]
+    xml_bytes = pdf_data[xml_start : xml_end + len(b"</rsm:CrossIndustryInvoice>")]
 
     root = etree.fromstring(xml_bytes)
     ns = {"ram": "urn:un:unece:uncefact:data:standard:ReusableAggregateBusinessInformationEntity:100"}
@@ -97,14 +112,22 @@ def test_export_zugferd_validation_error():
 
 def test_export_zugferd_mixed_vat():
     line1 = InvoiceLine(
-        line_id=1, description="Beratung 19%", quantity=Decimal("1"),
-        unit_price=Decimal("100.00"), line_total=Decimal("100.00"),
-        vat_category_code="S", vat_rate=Decimal("19.00"),
+        line_id=1,
+        description="Beratung 19%",
+        quantity=Decimal("1"),
+        unit_price=Decimal("100.00"),
+        line_total=Decimal("100.00"),
+        vat_category_code="S",
+        vat_rate=Decimal("19.00"),
     )
     line2 = InvoiceLine(
-        line_id=2, description="Buch 7%", quantity=Decimal("1"),
-        unit_price=Decimal("50.00"), line_total=Decimal("50.00"),
-        vat_category_code="S", vat_rate=Decimal("7.00"),
+        line_id=2,
+        description="Buch 7%",
+        quantity=Decimal("1"),
+        unit_price=Decimal("50.00"),
+        line_total=Decimal("50.00"),
+        vat_category_code="S",
+        vat_rate=Decimal("7.00"),
     )
     inv = _invoice()
     inv.lines = [line1, line2]
@@ -150,9 +173,13 @@ def test_export_zugferd_skonto():
 def test_export_zugferd_exemption_tax():
     """Tax-exempt category triggers exemption reason in XML."""
     line = InvoiceLine(
-        line_id=1, description="EU-Lieferung", quantity=Decimal("1"),
-        unit_code="C62", unit_price=Decimal("1000.00"),
-        line_total=Decimal("1000.00"), vat_category_code="K",
+        line_id=1,
+        description="EU-Lieferung",
+        quantity=Decimal("1"),
+        unit_code="C62",
+        unit_price=Decimal("1000.00"),
+        line_total=Decimal("1000.00"),
+        vat_category_code="K",
         vat_rate=Decimal("0"),
     )
     inv = _invoice()
@@ -173,10 +200,15 @@ def test_export_zugferd_exemption_tax():
 def test_export_zugferd_article_number():
     """Line item with article_number sets seller_assigned_id."""
     line = InvoiceLine(
-        line_id=1, description="Artikel", quantity=Decimal("1"),
-        unit_code="C62", unit_price=Decimal("100.00"),
-        line_total=Decimal("100.00"), vat_category_code="S",
-        vat_rate=Decimal("19.00"), article_number="ART-001",
+        line_id=1,
+        description="Artikel",
+        quantity=Decimal("1"),
+        unit_code="C62",
+        unit_price=Decimal("100.00"),
+        line_total=Decimal("100.00"),
+        vat_category_code="S",
+        vat_rate=Decimal("19.00"),
+        article_number="ART-001",
     )
     inv = _invoice()
     inv.lines = [line]

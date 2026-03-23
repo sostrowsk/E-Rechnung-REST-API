@@ -32,14 +32,10 @@ UNIT_CODES = [
 VAT_CATEGORIES = [
     ("S", "Normaler Steuersatz", Decimal("19.00"), None, None),
     ("S7", "Ermaessigter Steuersatz", Decimal("7.00"), None, None),
-    ("K", "Innergemeinschaftliche Lieferung", Decimal("0.00"),
-     "Intra-Community supply", "VATEX-EU-IC"),
-    ("G", "Ausfuhrlieferung", Decimal("0.00"),
-     "Export supply", "VATEX-EU-EXP"),
-    ("AE", "Reverse Charge", Decimal("0.00"),
-     "Reverse charge", "VATEX-EU-AE"),
-    ("E", "Steuerbefreit", Decimal("0.00"),
-     "Exempt from tax", "VATEX-EU-132"),
+    ("K", "Innergemeinschaftliche Lieferung", Decimal("0.00"), "Intra-Community supply", "VATEX-EU-IC"),
+    ("G", "Ausfuhrlieferung", Decimal("0.00"), "Export supply", "VATEX-EU-EXP"),
+    ("AE", "Reverse Charge", Decimal("0.00"), "Reverse charge", "VATEX-EU-AE"),
+    ("E", "Steuerbefreit", Decimal("0.00"), "Exempt from tax", "VATEX-EU-132"),
     ("Z", "Nullsatz", Decimal("0.00"), None, None),
 ]
 
